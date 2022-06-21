@@ -1,6 +1,7 @@
 # Decomp Tools
 
 A VS Code extension allowing in-editor tools. Less setup, less terminal, and less manual typing.
+Allows everyone to access and improve upon useful tools that might not otherwise be included in a decomp repository.
 
 Specifically made for N64 decomp, but other platforms such as GC could be supported as well.
 
