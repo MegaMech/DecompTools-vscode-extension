@@ -15,7 +15,11 @@ Generates M2C code in a nearby panel while you decomp. This way, you always have
 Displays a filtered tree view of small non-matching funcs. This helps devs decomp the small functions first. In the future, this could contain many filters.
 
 ## Usage
-Install the extension. From source, press F5 after loading the project in VS Code to compile and create a debugging session.
+Install the extension. (I haven't gotten that far yet)
+
+From source:  
+
+press F5 after loading the project in VS Code to compile and create a debugging session.
 
 Ctrl+Shift+P and clicking "Hello world" runs the hello world command and initializes the M2C module. You may need to click in and out of a function scope to get the M2C to appear. This currently only works on functions that contain assembly.
 
