@@ -6,6 +6,8 @@ Specifically made for N64 decomp, but other platforms such as GC could be suppor
 
 ## Features
 
+Modular design in Typescript. Anyone can add a module contributing to an efficient decomp workflow.
+
 Generates M2C code in a nearby panel while you decomp. This way, you always have access to the original M2C! It tracks your scope, no need for any terminal commands.
 
 [wip]
