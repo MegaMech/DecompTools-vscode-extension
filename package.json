@@ -1,0 +1,122 @@
+{
+  "name": "decomptools",
+	"displayName": "Decomp Tools",
+	"description": "In IDE tools for N64 decomp",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.68.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+        "onCommand:decomp.helloWorld",
+		"onView:decomp_webview"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "decomp.helloWorld",
+				"title": "Hello World"
+			}
+		],
+		"viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "decomp_activity",
+                    "title": "Decomp Tools",
+                    "icon": "resources/icon.png"
+                }
+            ]
+        },
+		"views": {
+			"decomp_activity": [
+				{
+					"type": "webview",
+					"id": "decomp_webview",
+					"name": "Decomp"
+				},
+				{
+					"id": "funcs_view",
+					"name": "Content"
+				}
+			]
+		},
+		"customEditors": [
+			{
+				"viewType": "decomp.m2c",
+				"displayName": "Mips to C",
+				"when":"resourceScheme == m2cScheme",
+				"selector":
+				[
+					{
+						"filenamePattern": "*.c"
+					}
+				],
+				"priority": "default"
+			}
+		],
+		"configuration": {
+			"title": "Decomp Tools",
+			"properties": {
+				"decompTools.projectFolder": {
+					"type": "string",
+					"default": "",
+					"description": "Project Folder, leave blank to use current workspace"
+				},
+				"decompTools.assemblyFolder": {
+					"type": "string",
+					"default": "asm",
+					"description": "Name of assembly directory"
+				},
+				"decompTools.nonmatchingFolder": {
+					"type": "string",
+					"default": "asm\\non_matchings",
+					"description": "Path to non_matching folder"
+				},
+				"decompTools.srcFolder": {
+					"type": "string",
+					"default": "src",
+					"description": "Path to src folder"
+				},
+				"decompTools.toolsFolder": {
+					"type": "string",
+					"default": "tools",
+					"description": "Path to tools folder"
+				},
+				"decompTools.map": {
+					"type": "string",
+					"default": "build/us/mk64.us.map",
+					"description": "Path to tools folder"
+				},
+				"decompTools.m2c": {
+					"type": "string",
+					"default": "decomp\\m2c",
+					"description": "Path to m2c"
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.68.0",
+		"@types/glob": "^7.2.0",
+		"@types/mocha": "^9.1.1",
+		"@types/node": "16.x",
+		"@typescript-eslint/eslint-plugin": "^5.27.0",
+		"@typescript-eslint/parser": "^5.27.0",
+		"eslint": "^8.16.0",
+		"glob": "^8.0.3",
+		"mocha": "^10.0.0",
+		"typescript": "^4.7.2",
+		"@vscode/test-electron": "^2.1.3"
+	}
+}

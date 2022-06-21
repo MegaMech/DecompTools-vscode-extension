@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="{{pathCSS}}">
+    </head>
+<body>
+
+    <button onclick="InitDecompTools()">Start Decomping!</button>
+
+    <button onclick="run_func(0)">Find funcs with length</button>
+    <pre><code class="language-c" id="data"></code></pre>
+</body>
+
+</html>
+
+<script>
+
+const vscode = acquireVsCodeApi();
+function run_func(button) {
+    switch(button) {
+        case 0:
+            vscode.postMessage({
+                command: '0',
+                text: 'clicked'
+            });
+            break;
+        case 1:
+            break;
+    }
+}
+// Handle the message inside the webview
+window.addEventListener('message', event => {
+
+    const message = event.data; // The JSON data our extension sent
+
+});
+</script>
