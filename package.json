@@ -39,7 +39,7 @@
 				},
 				{
 					"id": "funcs_view",
-					"name": "Content"
+					"name": "Filtered Funcs"
 				}
 			]
 		},
@@ -72,7 +72,7 @@
 				},
 				"decompTools.nonmatchingFolder": {
 					"type": "string",
-					"default": "asm\\non_matchings",
+					"default": "C:\\Users\\MegaMech\\decomp\\mk64\\asm\\non_matchings",
 					"description": "Path to non_matching folder"
 				},
 				"decompTools.srcFolder": {
@@ -92,7 +92,7 @@
 				},
 				"decompTools.m2c": {
 					"type": "string",
-					"default": "decomp\\m2c",
+					"default": "C:\\Users\\MegaMech\\decomp\\m2c",
 					"description": "Path to m2c"
 				}
 			}

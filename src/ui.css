@@ -4,4 +4,5 @@ button {
 }
 button:hover {
     background-color: rgb(17, 119, 187);
+    cursor: pointer;
 }

@@ -51,16 +51,35 @@ export class init_modules {
 		this.m.init(context);
 	}
 }
-
+let init2 = false;
+export class init_modules2 {
+	private m:funcSizeCounter;
+	private didInit = false;
+	constructor() {
+		this.m = new funcSizeCounter();
+	}
+	init(size: number) {
+		
+		if (!init2) {
+			init2 = true;
+			this.m.init_count(size);
+		}
+		if (init2) {
+			this.m.update(size);
+		}
+	}
+}
 class customViewProvider implements vscode.WebviewViewProvider {
 	public static readonly viewType = "decomp_webview";
 	private _view?: vscode.WebviewView;
 	private extensionUri: string;
 	public webview: vscode.Webview | undefined;
+	private funcSizeCount: init_modules2;
 	constructor(
 		private readonly _extensionUri: string,
 	) {
 		this.extensionUri = _extensionUri;
+		this.funcSizeCount = new init_modules2();
 	 }
 
 	public resolveWebviewView(
@@ -94,9 +113,16 @@ class customViewProvider implements vscode.WebviewViewProvider {
 
 			switch (data.command) {
 				case '0':
-						const funcSizeCounte = new funcSizeCounter();
-						funcSizeCounte.init_count(100); 
-						break;
+					break;
+				case '1':
+					let a: number;
+					try {
+						a = Number(data.text);
+					} catch {
+						throw "Bad find funcs with length input"
+					}
+					this.funcSizeCount.init(data.text);
+					break;
 			}
 		});
 	}

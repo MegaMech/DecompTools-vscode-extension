@@ -4,104 +4,121 @@ import * as fs from 'fs';
 import { DecompToolsConfiguration } from "./configuration";
 import { resolve } from 'path';
 import { readdir } from 'fs/promises';
+import * as utils from '../utils';
 
 
 export class funcSizeCounter {
     
-    public funcs?:string[];// string[];
-
-    // todo: input box for typing what size of funcs you want to find.
-    // todo: build treeview and display returned data.
-
-
+    readonly onDidChangeTreeData: vscode.EventEmitter<TreeData | undefined | null | void> = new vscode.EventEmitter<TreeData | undefined | null | void>();
+    private sizeRef: sizeData;
+    constructor() {
+        this.sizeRef = new sizeData();
+    }
     /**
      * size is bytes to check for
      * @param size kb
      **/
-     async init_count(size: number) {
+    async init_count(size: number) {
+        this.sizeRef.size = size;
+
         const config = new DecompToolsConfiguration();
-
-
-
-    ;(async () => {
-        for await (const f of this.getFiles(config.reconfigurate("nonmatchingFolder"))) {
-            fs.stat(f, (err, stats) => {
-                if (err) console.error(err);
-
-                if (stats.size <= 3000) {
-                    const fileName = f.match(/[ \w-]+?(?=\.)/);
-                    this.funcs?.push(String(fileName));
-                }
-            });
-            
-        }
-        })()
-
-
-}
-
-    async *getFiles(dir: string): AsyncGenerator<string> {
-        const entries = await readdir(dir, { withFileTypes: true });
-        for (const entry of entries) {
-            const res = resolve(dir, entry.name);
-            if (entry.isDirectory()) {
-                yield* this.getFiles(res);
-            } else {
-                yield res;
-            }
-        }
+    
+        const provider = new FunctionTreeProvider(this.sizeRef, this.onDidChangeTreeData);
+        
+        vscode.window.registerTreeDataProvider('funcs_view', provider);
+    }
+    public update(size: number) {
+        this.sizeRef.size = size;
+        this.onDidChangeTreeData.fire();
     }
 }
 
-// export class NodeDependenciesProvider implements vscode.TreeDataProvider<Dependency> {
-//     constructor(private workspaceRoot: string) {}
+export class sizeData {
+    public size: number;
+    constructor() {
+        this.size = 0;
+    }
+}
+
+export class TreeData extends vscode.TreeItem {
+    constructor(
+        public readonly label: string,
+        public readonly path: string,
+        public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+    ) {
+        super(label, collapsibleState);
+    }
+}
+
+export class FunctionTreeProvider implements vscode.TreeDataProvider<TreeData> {
+    private _onDidChangeTreeData: vscode.EventEmitter<TreeData | undefined | null | void>;
+    
+    
+    public funcs: TreeData[];
+
+    private config = new DecompToolsConfiguration();
+    constructor(private sizeRef: sizeData, 
+        ondid: vscode.EventEmitter<TreeData | undefined | null | void>
+        ) {
+        this.funcs = [];
+        this._onDidChangeTreeData = ondid;
+    }
+
+    refresh(): void {
+        this._onDidChangeTreeData.fire();
+    }
   
-//     getTreeItem(element: Dependency): vscode.TreeItem {
-//       return element;
-//     }
-  
-//     getChildren(element?: Dependency): Thenable<Dependency[]> {
-//       if (!this.workspaceRoot) {
-//         vscode.window.showInformationMessage('No dependency in empty workspace');
-//         return Promise.resolve([]);
-//       }
-  
-//       if (element) {
-//         return Promise.resolve(
-//           this.getDepsInPackageJson(
-//             path.join(this.workspaceRoot, 'node_modules', element.label, 'package.json')
-//           )
-//         );
-//       } else {
-//         const packageJsonPath = path.join(this.workspaceRoot, 'package.json');
-//         if (this.pathExists(packageJsonPath)) {
-//           return Promise.resolve(this.getDepsInPackageJson(packageJsonPath));
-//         } else {
-//           vscode.window.showInformationMessage('Workspace has no package.json');
-//           return Promise.resolve([]);
-//         }
-//       }
-//     }
-// }
+    getTreeItem(element: TreeData): vscode.TreeItem {
+        return element;
+    }
+    
+    async getChildren(element?: TreeData): Promise<TreeData[]> {
+        // Build root elements
+        if (!element) {
+            const str = utils.getDirectoriesRecursive(this.config.reconfigurate("nonmatchingFolder"));
+            str.shift();str.shift();str.shift();
+            let data:TreeData[] = [];
+            for (let el of str) {
 
-// export class Dependency extends vscode.TreeItem {
+                let counter = 0;
+                for await (const f of utils.getFiles(el)) {
+                    fs.stat(f, (err, stats) => {
+                        if (err) console.error(err);
+    
+                        if (stats.size <= this.sizeRef.size) {
+                            counter++;
+                        }
+                    });
+                }
+                if (counter = 0) { continue; }
 
-//     constructor(
-//         public readonly label: string,
-//         private readonly version: string,
-//         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-//         public readonly command?: vscode.Command
-//     ) {
-//         super(label, collapsibleState);
+                const a = new TreeData(String(el.match(/[ \w-]+?(?=$)/)), el, vscode.TreeItemCollapsibleState.Collapsed);
+                //console.log(a);
+                data.push(a);
+            }
+            return data;
+        }
+        // Use reference data to build tree items (children).
+        console.log(element.path);
+        await this.getTreeFiles(element.path, this.sizeRef.size);
+        return this.funcs;
+    }
 
-//         this.tooltip = `${this.label}-${this.version}`;
-//         this.description = this.version;
-//     }
+    private getTreeFiles(patha: string, size: number) {
+        return (async () => {
+            for await (const f of utils.getFiles(patha)) {
+                fs.stat(f, (err, stats) => {
+                    if (err) console.error(err);
 
-//     iconPath = {
-//         light: path.join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),
-//         dark: path.join(__filename, '..', '..', 'resources', 'dark', 'dependency.svg')
-//     };
-
-//     contextValue = 'dependency';
-// }
+                    if (stats.size <= size) {
+                        const fileName = f.match(/[ \w-]+?(?=\.)/);
+                        const a = new TreeData(fileName+".s",String(f), vscode.TreeItemCollapsibleState.None);
+                        this.funcs.push(a);
+                        console.log();
+                    }
+                });
+                
+            }
+        })()
+    }
+}

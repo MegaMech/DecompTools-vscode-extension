@@ -51,18 +51,19 @@ export class m2c {
         if (this.oldLine == activeEditor.selection.active.line) { return; }
 
         const documentSymbols = await vscode.commands.executeCommand<vscode.DocumentSymbol[]>('vscode.executeDocumentSymbolProvider', activeEditor.document.uri);
+        if ( Symbol.iterator in Object(documentSymbols)) { 
+            for (const item of documentSymbols) {
+                if (item.range.contains(activeEditor.selection.active)) {
+                    let symbol = item.name.replace(/\(.*$/, "");
 
-        for (const item of documentSymbols) {
-            if (item.range.contains(activeEditor.selection.active)) {
-                let symbol = item.name.replace(/\(.*$/, "");
+                    if (this.oldFunc == symbol) { return; };
 
-                if (this.oldFunc == symbol) { return; };
+                    await this.runm2c(symbol, activeEditor, this.textEventHandler, this.onDidChange, this.m2cDocument);
 
-                await this.runm2c(symbol, activeEditor, this.textEventHandler, this.onDidChange, this.m2cDocument);
-
-                this.oldFunc = symbol;
-                this.oldLine = activeEditor.selection.active.line;
-                break;
+                    this.oldFunc = symbol;
+                    this.oldLine = activeEditor.selection.active.line;
+                    break;
+                }
             }
         }
     }

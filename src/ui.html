@@ -6,9 +6,10 @@
     </head>
 <body>
 
-    <button onclick="InitDecompTools()">Start Decomping!</button>
-
-    <button onclick="run_func(0)">Find funcs with length</button>
+    <button onclick="run_func(0)">Start Decomping!</button>
+    <br>
+    <button onclick="run_func(1)">Find funcs with length</button>
+    <input value="500" id="findFuncLengthInput" type="number"></input>
     <pre><code class="language-c" id="data"></code></pre>
 </body>
 
@@ -26,6 +27,10 @@ function run_func(button) {
             });
             break;
         case 1:
+            vscode.postMessage({
+                command: '1',
+                text: document.getElementById("findFuncLengthInput").value,
+            });
             break;
     }
 }

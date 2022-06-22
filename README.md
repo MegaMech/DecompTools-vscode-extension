@@ -12,7 +12,7 @@ Modular design in Typescript. Anyone can add a module contributing to an efficie
 Generates M2C code in a nearby panel while you decomp. This way, you always have access to the original M2C! It tracks your scope, no need for any terminal commands.
 
 [wip]
-Displays a filtered tree view of small non-matching funcs. This helps devs decomp the small functions first. In the future, this could contain many filters.
+Displays a filtered tree view of non-matching funcs of byte size. This helps devs decomp the small functions first. In the future, this could contain many filters.
 
 ## Usage
 Install the extension. (I haven't gotten that far yet)
@@ -40,6 +40,10 @@ Todo: Recognize decomps and set this up automatically
 
 ## Todo
 * Project directory has entire path then the other settings are just `src/` then in code we chain the two settings together.
+
+* Fix bug in `Find funcs with length` to not show empty folders.
+* Display how many funcs were found.
+* Onclick open file.
 
 ## Known Issues
 
