@@ -7,21 +7,36 @@ Specifically made for N64 decomp, but other platforms such as GC could be suppor
 
 ## Features
 
-Modular design in Typescript. Anyone can add a module contributing to an efficient decomp workflow.
+* Modular design in Typescript. Anyone can add a module contributing to an efficient decomp workflow.
+* Generates M2C code in a nearby panel while you decomp. This way, you always have access to the original M2C! It tracks your scope, no need for any terminal commands.
+* Static DL generator
+* Dynamic DL helper
+* Displays a filtered tree view of non-matching funcs of byte size. This helps devs decomp the small functions first. In the future, this could contain many filters.
 
-Generates M2C code in a nearby panel while you decomp. This way, you always have access to the original M2C! It tracks your scope, no need for any terminal commands.
-
-[wip]
-Displays a filtered tree view of non-matching funcs of byte size. This helps devs decomp the small functions first. In the future, this could contain many filters.
-
-## Usage
+## Dependencies
+Compile gfxdis for Windows
+https://github.com/glankk/n64
+## Install
 Install the extension. (I haven't gotten that far yet)
 
-From source:  
 
-press F5 after loading the project in VS Code to compile and create a debugging session.
+## Compiling from source
+Open the project from VS Code and press F5 to compile and create a debugging session.
 
-Ctrl+Shift+P and clicking "Hello world" runs the hello world command and initializes the M2C module. You may need to click in and out of a function scope to get the M2C to appear. This currently only works on functions that contain assembly.
+## Usage
+Open the Decomp Tools menu by navigate to the decomp icon on the activbity bar. Click the `Begin Decomp!` button to initialize modules.
+
+### M2C
+You may need to click in and out of a function scope to get the M2C to appear. It only runs on functions that contain assembly in your decomps non_matching folder.
+
+### gfxdis
+Highlight some dynamic DLs. Press the "Convert" button. The textarea will display the machine-code. It will require some fixing up but it gets you most of the way. Then press "gfxdis" to generate the C code.
+
+### gfxdismulti
+A static displaylist generator. Find a .data file with DLs in it. Provide an offset with valid DLs and Decomp Tools will get gfxdis to generate C code until it hits a no op. Also converts `0x` addresses to `D_` and adds includes.
+
+### Func Size Counter
+Input a number. It will list any funcs smaller than that. Only works for non_matching files.
 
 ## Configuration
 File->Preferences->Settings
@@ -35,15 +50,17 @@ Todo: Recognize decomps and set this up automatically
 
 * Generate CTX on startup for the m2c module
 * Have a regenerate CTX button
-* Highlighting dynamic DLs will attempt to auto convert them to gfxdis bytecode in an editable panel. When the byte-code looks good pressing enter will paste gfxdis at your cursor.
-* Static DLs auto pasting the code into the text editor after providing a bin file and offset.
+* Display decomp stats on the status bar.
 
 ## Todo
 * Project directory has entire path then the other settings are just `src/` then in code we chain the two settings together.
 
-* Fix bug in `Find funcs with length` to not show empty folders.
+### Find small funcs
+* Fix bug that shows empty folders.
 * Display how many funcs were found.
 * Onclick open file.
+
+* When clicked, ui buttons should imitate the blue outline of vs code buttons.
 
 ## Known Issues
 

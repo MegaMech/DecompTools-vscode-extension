@@ -93,13 +93,12 @@ export class FunctionTreeProvider implements vscode.TreeDataProvider<TreeData> {
                 if (counter = 0) { continue; }
 
                 const a = new TreeData(String(el.match(/[ \w-]+?(?=$)/)), el, vscode.TreeItemCollapsibleState.Collapsed);
-                //console.log(a);
                 data.push(a);
             }
             return data;
         }
         // Use reference data to build tree items (children).
-        console.log(element.path);
+        //console.log(element.path);
         await this.getTreeFiles(element.path, this.sizeRef.size);
         return this.funcs;
     }
@@ -114,7 +113,6 @@ export class FunctionTreeProvider implements vscode.TreeDataProvider<TreeData> {
                         const fileName = f.match(/[ \w-]+?(?=\.)/);
                         const a = new TreeData(fileName+".s",String(f), vscode.TreeItemCollapsibleState.None);
                         this.funcs.push(a);
-                        console.log();
                     }
                 });
                 

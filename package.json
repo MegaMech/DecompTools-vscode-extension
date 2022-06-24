@@ -10,15 +10,15 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:decomp.helloWorld",
+		"onCommand:decomp.gfxdis",
 		"onView:decomp_webview"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "decomp.helloWorld",
-				"title": "Hello World"
+				"command": "decomp.unused",
+				"title": "Unused command"
 			}
 		],
 		"viewsContainers": {
@@ -36,6 +36,11 @@
 					"type": "webview",
 					"id": "decomp_webview",
 					"name": "Decomp"
+				},
+				{
+					"type": "webview",
+					"id": "gfxdis_webview",
+					"name": "gfxdis"
 				},
 				{
 					"id": "funcs_view",
@@ -62,8 +67,13 @@
 			"properties": {
 				"decompTools.projectFolder": {
 					"type": "string",
-					"default": "",
+					"default": "C:\\Users\\MegaMech\\decomp\\mk64",
 					"description": "Project Folder, leave blank to use current workspace"
+				},
+				"decompTools.projectFolderWSL": {
+					"type": "string",
+					"default": "/mnt/c/Users/MegaMech/decomp/mk64",
+					"description": "Project Folder in wsl/linux format"
 				},
 				"decompTools.assemblyFolder": {
 					"type": "string",
@@ -90,10 +100,25 @@
 					"default": "build/us/mk64.us.map",
 					"description": "Path to tools folder"
 				},
-				"decompTools.m2c": {
+				"decompTools.m2cDir": {
 					"type": "string",
 					"default": "C:\\Users\\MegaMech\\decomp\\m2c",
 					"description": "Path to m2c"
+				},
+				"decompTools.gfxdisDir": {
+					"type": "string",
+					"default": "/mnt/c/Users/MegaMech/decomp/gfxdis",
+					"description": "Path to gfxdis using forward slashes"
+				},
+				"decompTools.f3dType": {
+					"type": "string",
+					"default": "f3dex",
+					"description": "Type of f3d. Ex: f3dex"
+				},
+				"decompTools.bin": {
+					"type": "string",
+					"default": "bin",
+					"description": "Path to bin folder"
 				}
 			}
 		}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="{{pathCSS}}">
+    </head>
+<body>
+    <div id="content" style="display: none;">
+        <button onclick="run_func(0)">Find small funcs</button>
+        <textarea id="textbox"></textarea>
+        <button onclick="run_func(1)">gfxdis</button>
+
+    
+    </div>
+</body>
+
+</html>
+
+<script>
+
+const vscode = acquireVsCodeApi();
+function run_func(arg) {
+    switch(arg) {
+        case 0:
+            sendMessage('0', 'clicked');
+            break;
+        case 1:
+            sendMessage('1', 'clicked');
+            break;
+    }
+}
+function sendMessage(arg0, arg1) {
+    vscode.postMessage({
+        command: arg0,
+        text: arg1,
+    });
+}
+// Handle the message inside the webview
+window.addEventListener('message', event => {
+
+    const message = event.data; // The JSON data our extension sent
+
+});
+</script>

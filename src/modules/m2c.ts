@@ -72,7 +72,7 @@ export class m2c {
         const fileName = activeEditor.document.fileName.match(/[ \w-]+?(?=\.)/);
 
         const config = new DecompToolsConfiguration();
-        const m2cPath = config.reconfigurate("m2c");
+        const m2cPath = config.reconfigurate("m2cDir");
         const nonMatchingPath = config.reconfigurate("nonmatchingFolder");
         const cp = require('child_process')
 

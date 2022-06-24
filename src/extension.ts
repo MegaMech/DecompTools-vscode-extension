@@ -5,33 +5,27 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { funcSizeCounter } from './modules/funcSizeCounter';
 import { m2c } from './modules/m2c';
+import { gfxdismulti } from './modules/gfxdismulti';
+import { gfxdis } from './modules/gfxdis/gfxdis';
+
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 	
-	const _init_modules = new init_modules();
-
-	const provider = new customViewProvider(context.extensionPath);
 	
-	_init_modules.init(context);
+	const provider = new customViewProvider(context.extensionPath, context);
 	
     context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(customViewProvider.viewType, provider));
-		
-		// The command has been defined in the package.json file
-		// Now provide the implementation of the command with registerCommand
-		// The commandId parameter must match the command field in package.json
-		let disposable = vscode.commands.registerCommand('decomp.helloWorld', () => {
-			// The code you place here will be executed every time your command is executed
-			// Display a message box to the user
-		//provider.webview.html = fs.readFileSync(this._extensionUri, 'utf8');
 
-		vscode.window.showInformationMessage('Welcome Back. Happy Decomping!');
-	});
-
-	context.subscriptions.push(disposable);
-
+	const gfxdisRef = new gfxdis().init(context);
+}
+	
+export function InitExtension(context: vscode.ExtensionContext) {
+	const _init_modules = new init_modules();
+	_init_modules.init(context);
+	vscode.window.showInformationMessage('Welcome Back. Happy Decomping!');
 }
 
 // this method is called when your extension is deactivated
@@ -75,11 +69,14 @@ class customViewProvider implements vscode.WebviewViewProvider {
 	private extensionUri: string;
 	public webview: vscode.Webview | undefined;
 	private funcSizeCount: init_modules2;
+	private context: vscode.ExtensionContext;
 	constructor(
 		private readonly _extensionUri: string,
+		context: vscode.ExtensionContext,
 	) {
 		this.extensionUri = _extensionUri;
 		this.funcSizeCount = new init_modules2();
+		this.context = context;
 	 }
 
 	public resolveWebviewView(
@@ -113,6 +110,7 @@ class customViewProvider implements vscode.WebviewViewProvider {
 
 			switch (data.command) {
 				case '0':
+					InitExtension(this.context);
 					break;
 				case '1':
 					let a: number;
@@ -123,6 +121,12 @@ class customViewProvider implements vscode.WebviewViewProvider {
 					}
 					this.funcSizeCount.init(data.text);
 					break;
+				case '2':
+					const arr = JSON.parse(data.text);
+					//try {
+						gfxdismulti(arr[0], parseInt(arr[1], 16), arr[2]);
+					//}
+					//catch {console.error("Error: Bad user input")}
 			}
 		});
 	}

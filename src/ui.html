@@ -6,11 +6,18 @@
     </head>
 <body>
 
-    <button onclick="run_func(0)">Start Decomping!</button>
-    <br>
-    <button onclick="run_func(1)">Find funcs with length</button>
-    <input value="500" id="findFuncLengthInput" type="number"></input>
-    <pre><code class="language-c" id="data"></code></pre>
+    <button id="startButton" onclick="run_func(0)">Begin Decomp!</button>
+    <div id="content" style="display: none;">
+        <input value="500" id="findFuncLengthInput" type="number"></input> bytes<br>
+        <button onclick="run_func(1)">Find small funcs</button>
+        <pre><code class="language-c" id="data"></code></pre>
+        <br>
+        <input class="gfxdisInput" id="gfxdisFile" placeholder="Binary File"></input><br>
+        <input class="gfxdisInput" id="gfxdisSym" placeholder="Symbol Name"></input><br>
+        <input class="gfxdisInput" id="gfxdisOffset" placeholder="Start Offset"></input>
+        <button onclick="run_func(2)">gfxdis</button>
+    
+    </div>
 </body>
 
 </html>
@@ -21,18 +28,37 @@ const vscode = acquireVsCodeApi();
 function run_func(button) {
     switch(button) {
         case 0:
-            vscode.postMessage({
-                command: '0',
-                text: 'clicked'
-            });
+            sendMessage(
+                '0',
+                'clicked'
+            );
+            document.getElementById("startButton").style.display = "none";
+            document.getElementById("content").style.display = "block";
             break;
         case 1:
-            vscode.postMessage({
-                command: '1',
-                text: document.getElementById("findFuncLengthInput").value,
-            });
+            sendMessage(
+                '1',
+                document.getElementById("findFuncLengthInput").value,
+            );
+            break;
+        case 2:
+            sendMessage(
+                "3",
+                JSON.stringify(
+                    [
+                        document.getElementById("gfxdisFile").value,
+                        document.getElementById("gfxdisOffset").value,
+                        document.getElementById("gfxdisSym").value
+                    ]),
+            );
             break;
     }
+}
+function sendMessage(arg0, arg1) {
+    vscode.postMessage({
+        command: arg0,
+        text: arg1,
+    });
 }
 // Handle the message inside the webview
 window.addEventListener('message', event => {
