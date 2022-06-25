@@ -65,40 +65,15 @@
 		"configuration": {
 			"title": "Decomp Tools",
 			"properties": {
-				"decompTools.projectFolder": {
+				"decompTools.projectPath": {
 					"type": "string",
 					"default": "C:\\Users\\MegaMech\\decomp\\mk64",
 					"description": "Project Folder, leave blank to use current workspace"
 				},
-				"decompTools.projectFolderWSL": {
+				"decompTools.projectPathWSL": {
 					"type": "string",
 					"default": "/mnt/c/Users/MegaMech/decomp/mk64",
 					"description": "Project Folder in wsl/linux format"
-				},
-				"decompTools.assemblyFolder": {
-					"type": "string",
-					"default": "asm",
-					"description": "Name of assembly directory"
-				},
-				"decompTools.nonmatchingFolder": {
-					"type": "string",
-					"default": "C:\\Users\\MegaMech\\decomp\\mk64\\asm\\non_matchings",
-					"description": "Path to non_matching folder"
-				},
-				"decompTools.srcFolder": {
-					"type": "string",
-					"default": "src",
-					"description": "Path to src folder"
-				},
-				"decompTools.toolsFolder": {
-					"type": "string",
-					"default": "tools",
-					"description": "Path to tools folder"
-				},
-				"decompTools.map": {
-					"type": "string",
-					"default": "build/us/mk64.us.map",
-					"description": "Path to tools folder"
 				},
 				"decompTools.m2cDir": {
 					"type": "string",
@@ -109,16 +84,6 @@
 					"type": "string",
 					"default": "/mnt/c/Users/MegaMech/decomp/gfxdis",
 					"description": "Path to gfxdis using forward slashes"
-				},
-				"decompTools.f3dType": {
-					"type": "string",
-					"default": "f3dex",
-					"description": "Type of f3d. Ex: f3dex"
-				},
-				"decompTools.bin": {
-					"type": "string",
-					"default": "bin",
-					"description": "Path to bin folder"
 				}
 			}
 		}

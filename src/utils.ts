@@ -45,7 +45,7 @@ async function *getFiles(dir: string): AsyncGenerator<string> {
 /** getFiles call implementation */
 /*
 ;(async () => {
-    for await (const f of utils.getFiles(config.reconfigurate("nonmatchingFolder"))) {
+    for await (const f of utils.getFiles(config.config.nonmatching)) {
         fs.stat(f, (err, stats) => {
             if (err) console.error(err);
 

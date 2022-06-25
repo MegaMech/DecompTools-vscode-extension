@@ -7,19 +7,22 @@ import { funcSizeCounter } from './modules/funcSizeCounter';
 import { m2c } from './modules/m2c';
 import { gfxdismulti } from './modules/gfxdismulti';
 import { gfxdis } from './modules/gfxdis/gfxdis';
+import { DecompToolsConfiguration } from './modules/configuration';
+import { mk64 } from './decomp_config';
+import { arraydsm } from './modules/arraydsm';
 
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-	
-	
+
 	const provider = new customViewProvider(context.extensionPath, context);
 	
     context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(customViewProvider.viewType, provider));
 
-	const gfxdisRef = new gfxdis().init(context);
+	const gfxdisRef = new gfxdis();
+	gfxdisRef.init(context);
 }
 	
 export function InitExtension(context: vscode.ExtensionContext) {
@@ -99,7 +102,7 @@ class customViewProvider implements vscode.WebviewViewProvider {
 		html = html.replace("{{pathCSS}}", String(webviewView.webview.asWebviewUri(pathToCSS)));
 
 		const updateWebview = () => {
-			webviewView.webview.html = html
+			webviewView.webview.html = html;
 		};
 
 		setInterval(updateWebview, 1000);
@@ -127,6 +130,9 @@ class customViewProvider implements vscode.WebviewViewProvider {
 						gfxdismulti(arr[0], parseInt(arr[1], 16), arr[2]);
 					//}
 					//catch {console.error("Error: Bad user input")}
+				case '3':
+					const arra = JSON.parse(data.text);
+					arraydsm(arra[0], parseInt(arra[1], 16), arra[2]);
 			}
 		});
 	}

@@ -15,7 +15,8 @@
         <input class="gfxdisInput" id="gfxdisFile" placeholder="Binary File"></input><br>
         <input class="gfxdisInput" id="gfxdisSym" placeholder="Symbol Name"></input><br>
         <input class="gfxdisInput" id="gfxdisOffset" placeholder="Start Offset"></input>
-        <button onclick="run_func(2)">gfxdis</button>
+        <button onclick="run_func(2)" style="margin-bottom: 5px;">gfxdis</button>
+
     
     </div>
 </body>
@@ -43,7 +44,7 @@ function run_func(button) {
             break;
         case 2:
             sendMessage(
-                "3",
+                "2",
                 JSON.stringify(
                     [
                         document.getElementById("gfxdisFile").value,
@@ -52,6 +53,16 @@ function run_func(button) {
                     ]),
             );
             break;
+        case 3:
+            sendMessage(
+                "3",
+                JSON.stringify(
+                    [
+                        document.getElementById("arraydsmFile").value,
+                        document.getElementById("arraydsmOffset").value,
+                        document.getElementById("arraydsmSym").value
+                    ]),
+            );
     }
 }
 function sendMessage(arg0, arg1) {

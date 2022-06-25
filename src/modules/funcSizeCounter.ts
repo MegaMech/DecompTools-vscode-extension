@@ -20,8 +20,6 @@ export class funcSizeCounter {
      **/
     async init_count(size: number) {
         this.sizeRef.size = size;
-
-        const config = new DecompToolsConfiguration();
     
         const provider = new FunctionTreeProvider(this.sizeRef, this.onDidChangeTreeData);
         
@@ -60,9 +58,10 @@ export class FunctionTreeProvider implements vscode.TreeDataProvider<TreeData> {
     constructor(private sizeRef: sizeData, 
         ondid: vscode.EventEmitter<TreeData | undefined | null | void>
         ) {
-        this.funcs = [];
-        this._onDidChangeTreeData = ondid;
-    }
+            this.funcs = [];
+            this._onDidChangeTreeData = ondid;
+            this.config.init();
+        }
 
     refresh(): void {
         this._onDidChangeTreeData.fire();
@@ -75,7 +74,9 @@ export class FunctionTreeProvider implements vscode.TreeDataProvider<TreeData> {
     async getChildren(element?: TreeData): Promise<TreeData[]> {
         // Build root elements
         if (!element) {
-            const str = utils.getDirectoriesRecursive(this.config.reconfigurate("nonmatchingFolder"));
+            const projDir = this.config.reconfigurate("projectPath");
+            const fullPath = path.normalize(projDir+"/"+this.config.config.asmDir+"/"+this.config.config.nonmatchingDir);
+            const str = utils.getDirectoriesRecursive(fullPath);
             str.shift();str.shift();str.shift();
             let data:TreeData[] = [];
             for (let el of str) {

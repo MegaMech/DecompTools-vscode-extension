@@ -16,13 +16,19 @@ button {
     justify-content: center;
     align-items: center;
     line-height: 18.2px;
+    outline-offset: -1px;
 }
 button:hover {
     background-color: rgb(17, 119, 187);
     cursor: pointer;
 }
-button:active {
-    outline: 1px solid rgb(17, 119, 187);
+button:focus {
+    outline-color: #007fd4;
+    outline-width: 1px;
+    outline-style: solid;
+    opacity: 1 !important;
+    outline-offset: 2px !important;
+
 }
 input, textarea {
     font-family: "Segoe WPC", "Segoe UI", sans-serif;

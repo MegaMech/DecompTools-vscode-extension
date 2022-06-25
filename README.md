@@ -10,15 +10,15 @@ Specifically made for N64 decomp, but other platforms such as GC could be suppor
 * Modular design in Typescript. Anyone can add a module contributing to an efficient decomp workflow.
 * Generates M2C code in a nearby panel while you decomp. This way, you always have access to the original M2C! It tracks your scope, no need for any terminal commands.
 * Static DL generator
-* Dynamic DL helper
+* Dynamic DL realizer. Places matched machine-code into a text box for easy manipulation prior to sending to gfxdis.
 * Displays a filtered tree view of non-matching funcs of byte size. This helps devs decomp the small functions first. In the future, this could contain many filters.
 
 ## Dependencies
-Compile gfxdis for Windows
+Compile gfxdis for wsl or linux.
 https://github.com/glankk/n64
+
 ## Install
 Install the extension. (I haven't gotten that far yet)
-
 
 ## Compiling from source
 Open the project from VS Code and press F5 to compile and create a debugging session.
@@ -35,8 +35,8 @@ Highlight some dynamic DLs. Press the "Convert" button. The textarea will displa
 ### gfxdismulti
 A static displaylist generator. Find a .data file with DLs in it. Provide an offset with valid DLs and Decomp Tools will get gfxdis to generate C code until it hits a no op. Also converts `0x` addresses to `D_` and adds includes.
 
-### Func Size Counter
-Input a number. It will list any funcs smaller than that. Only works for non_matching files.
+### Func Size Viewer
+Input a size in bytes to list any funcs that size or smaller. Only works for non_matching files.
 
 ## Configuration
 File->Preferences->Settings
@@ -51,20 +51,18 @@ Todo: Recognize decomps and set this up automatically
 * Generate CTX on startup for the m2c module
 * Have a regenerate CTX button
 * Display decomp stats on the status bar.
+* Vtx dissassembly
 
 ## Todo
-* Project directory has entire path then the other settings are just `src/` then in code we chain the two settings together.
 
-### Find small funcs
-* Fix bug that shows empty folders.
+### Func Size Viewer
 * Display how many funcs were found.
 * Onclick open file.
 
-* When clicked, ui buttons should imitate the blue outline of vs code buttons.
-
 ## Known Issues
 
-The M2C module doesn't start working immediately without prior input and some messing about.
+* The M2C module doesn't start working immediately without prior input and some messing about.
+* The Func Size Counter doesn't open files on click and shows empty folders.
 
 ## Contributing
 

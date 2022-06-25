@@ -2,6 +2,7 @@ import { spawnSync } from 'child_process';
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
+import { DecompToolsConfiguration } from '../configuration';
 
 export class gfxdis {
 
@@ -11,7 +12,7 @@ export class gfxdis {
             vscode.window.registerWebviewViewProvider(gfxdisViewProvider.viewType, provider));
     }
 
-    public parse_m2c() {
+    public parse_m2c(webview: vscode.Webview) {
         const activeEditor = vscode.window.activeTextEditor;
         if (activeEditor == undefined) { return; }
 
@@ -24,7 +25,6 @@ export class gfxdis {
         let unk4 = highlight.match(/(?<=->unk4 = ).*/g);
         
         let str = "";
-        console.log("Running gfxdis");
 
         if (unk0 && unk4) {
 
@@ -57,13 +57,41 @@ export class gfxdis {
                 str += unk0[i]+" ";
                 str += unk4[i]+"\n";
             }
-            console.log(str);
+            webview.postMessage(str);
         } else {
-            console.error("No matches for gfx found.");
+            webview.postMessage("No matches for gfx found.");
         }
     }
     public run_gfxdis(machine_code: string) {
-        //const out = spawnSync("wsl", [arg1+" -d "+machine_code+" -a 0x"+(offset+startOffset).toString(16).toUpperCase()], {windowsVerbatimArguments: true, encoding: "utf-8"});
+
+        const config = new DecompToolsConfiguration();
+        config.init();
+        const gfxdisPath = config.reconfigurate("gfxdisDir");
+        const F3DType = config.config.f3d;
+        const dl = config.config.displayListHead;
+
+        const arg1 = gfxdisPath+"/gfxdis."+F3DType;
+
+        if (!machine_code) { return; }
+        
+        if (machine_code.search("err") != -1) { return; }
+        machine_code = machine_code.replace(/(0x)|( )/g, "");
+        machine_code = machine_code.replace(/\n/g, " ");
+        
+        console.log(machine_code);
+        const out = spawnSync("wsl", [arg1+" -g "+dl+" -d "+machine_code], {windowsVerbatimArguments: true, encoding: "utf-8"});
+    
+        const activeEditor = vscode.window.activeTextEditor;
+
+        if (out.stderr) { return; } // todo: error handling
+        if (activeEditor) {
+            const line = activeEditor.selection.active.line;
+            const char = activeEditor.selection.active.character
+            const pos = new vscode.Position(line, char);
+            activeEditor.edit((edit) => {
+                edit.insert(pos, out.stdout);
+            })
+        } else {console.error("Error: No active editor")}
     }
 }
 
@@ -106,7 +134,7 @@ class gfxdisViewProvider implements vscode.WebviewViewProvider {
 		html = html.replace("{{pathCSS}}", String(webviewView.webview.asWebviewUri(pathToCSS)));
 
 		const updateWebview = () => {
-			webviewView.webview.html = html
+			webviewView.webview.html = html;
 		};
 
 		setInterval(updateWebview, 1000);
@@ -115,10 +143,10 @@ class gfxdisViewProvider implements vscode.WebviewViewProvider {
 
 		webviewView.webview.onDidReceiveMessage(data => {
             switch(data.command) {
-                case 0:
-                    this._gfxdis.parse_m2c();
+                case '0':
+                    this._gfxdis.parse_m2c(webviewView.webview);
                     break;
-                case 1:
+                case '1':
                     this._gfxdis.run_gfxdis(data.text);
                     break;
             }

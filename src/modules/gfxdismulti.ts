@@ -11,11 +11,12 @@ export async function gfxdismulti(binFile: string, startOffset: number, symbol: 
     const { spawnSync } = require('child_process');
 
     const config = new DecompToolsConfiguration();
-    const projFolder = config.reconfigurate("projectFolder");
-    const projFolderWSL = config.reconfigurate("projectFolderWSL");
-    const binFolder = config.reconfigurate("bin");
+    config.init();
+    const projFolder = config.reconfigurate("projectPath");
+    const projFolderWSL = config.reconfigurate("projectPathWSL");
+    const binFolder = config.config.binDir;
     const gfxdisPath = config.reconfigurate("gfxdisDir");
-    const F3DType = config.reconfigurate("f3dType");
+    const F3DType = config.config.f3d;
 
     if (!binFile || !startOffset || !symbol) { return; }
 
@@ -24,9 +25,8 @@ export async function gfxdismulti(binFile: string, startOffset: number, symbol: 
 
     const arg2WSL = fileToOpenWSL; 
     const arg1 = gfxdisPath+"/gfxdis."+F3DType;
-    const arg2 = "-f "+fileToOpen+" -a ";
 
-    const f = fs.readFileSync(fileToOpen, { encoding: 'binary', flag: 'r'});
+    const f = fs.readFileSync(path.normalize(fileToOpen), { encoding: 'binary', flag: 'r'});
     let buf = Buffer.from(f, "binary");
 
     let iterations = 100 * 2 // maxIterations and totalIterations

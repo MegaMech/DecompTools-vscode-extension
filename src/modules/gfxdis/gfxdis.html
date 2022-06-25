@@ -5,9 +5,9 @@
         <link rel="stylesheet" href="{{pathCSS}}">
     </head>
 <body>
-    <div id="content" style="display: none;">
-        <button onclick="run_func(0)">Find small funcs</button>
-        <textarea id="textbox"></textarea>
+    <div id="gfxcontent">
+        <button onclick="run_func(0)" style="margin-bottom: 5px; margin-top: 5px;">Realize macros</button>
+        <textarea style="height: 150px;" id="textbox"></textarea>
         <button onclick="run_func(1)">gfxdis</button>
 
     
@@ -25,7 +25,7 @@ function run_func(arg) {
             sendMessage('0', 'clicked');
             break;
         case 1:
-            sendMessage('1', 'clicked');
+            sendMessage('1', document.getElementById("textbox").value);
             break;
     }
 }
@@ -39,6 +39,7 @@ function sendMessage(arg0, arg1) {
 window.addEventListener('message', event => {
 
     const message = event.data; // The JSON data our extension sent
+    document.getElementById("textbox").value = message;
 
 });
 </script>
