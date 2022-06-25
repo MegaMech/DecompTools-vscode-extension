@@ -30,10 +30,10 @@ Open the Decomp Tools menu by navigate to the decomp icon on the activbity bar. 
 You may need to click in and out of a function scope to get the M2C to appear. It only runs on functions that contain assembly in your decomps non_matching folder.
 
 ### gfxdis
-Highlight some dynamic DLs. Press the "Convert" button. The textarea will display the machine-code. It will require some fixing up but it gets you most of the way. Then press "gfxdis" to generate the C code.
+Highlight some dynamic DLs then press `Realize Macros`. Modify the machine code generated in the textbox for it to be syntactically accurate. Next, press the `gfxdis` button to send the data to gfxdis. Its output will be pasted at your cursor position.
 
 ### gfxdismulti
-A static displaylist generator. Find a .data file with DLs in it. Provide an offset with valid DLs and Decomp Tools will get gfxdis to generate C code until it hits a no op. Also converts `0x` addresses to `D_` and adds includes.
+A static displaylist generator. Find a .data file with DLs in it. Provide an offset with valid DLs and Decomp Tools will get gfxdis to generate C code until it hits a no op. Also converts `0x` addresses to `D_` and adds includes. Its output will be pasted at your cursor position.
 
 ### Func Size Viewer
 Input a size in bytes to list any funcs that size or smaller. Only works for non_matching files.
@@ -41,10 +41,12 @@ Input a size in bytes to list any funcs that size or smaller. Only works for non
 ## Configuration
 File->Preferences->Settings
 
-Search "Decomp Tools". Make sure to input the non_matching directory, asm, etc.
-Different decomps lay their code out differently.
+Search "Decomp Tools". Enter the project folder.
+The extension has a config file that auto recognizes decomps.
+The extension will need to be recompiled and updated to support more decomps.
+It currently has only been tested on mk64 but it has a definition for kirby.
 
-Todo: Recognize decomps and set this up automatically
+Todo: Use current workspace automatically.
 
 ## Future Desirable Features
 
