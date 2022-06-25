@@ -10,6 +10,7 @@ import { gfxdis } from './modules/gfxdis/gfxdis';
 import { DecompToolsConfiguration } from './modules/configuration';
 import { mk64 } from './decomp_config';
 import { arraydsm } from './modules/arraydsm';
+import { viewDocument } from './ui.html';
 
 
 // this method is called when your extension is activated
@@ -96,13 +97,13 @@ class customViewProvider implements vscode.WebviewViewProvider {
 		};
 
 		
-		let html = fs.readFileSync(vscode.Uri.file(path.join(this.extensionUri, "src/ui.html")).with({scheme: 'vscode-resource'}).fsPath, "utf-8");
+		//let html = fs.readFileSync(vscode.Uri.file(path.join(this.extensionUri, "src/ui.html")).with({scheme: 'vscode-resource'}).fsPath, "utf-8");
 		
-		const pathToCSS = vscode.Uri.file(path.join(this.extensionUri, 'src/ui.css'));
-		html = html.replace("{{pathCSS}}", String(webviewView.webview.asWebviewUri(pathToCSS)));
+		//const pathToCSS = vscode.Uri.file(path.join(this.extensionUri, 'src/ui.css'));
+		//html = html.replace("{{pathCSS}}", String(webviewView.webview.asWebviewUri(pathToCSS)));
 
 		const updateWebview = () => {
-			webviewView.webview.html = html;
+			webviewView.webview.html = viewDocument();
 		};
 
 		setInterval(updateWebview, 1000);

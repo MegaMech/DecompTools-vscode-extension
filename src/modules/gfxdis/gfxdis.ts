@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import { DecompToolsConfiguration } from '../configuration';
+import { viewGfxDocument } from './gfxdis.html';
 
 export class gfxdis {
 
@@ -127,14 +128,8 @@ class gfxdisViewProvider implements vscode.WebviewViewProvider {
 			]
 		};
 
-		
-		let html = fs.readFileSync(vscode.Uri.file(path.join(this.extensionUri, "src/modules/gfxdis/gfxdis.html")).with({scheme: 'vscode-resource'}).fsPath, "utf-8");
-		
-		const pathToCSS = vscode.Uri.file(path.join(this.extensionUri, 'src/ui.css'));
-		html = html.replace("{{pathCSS}}", String(webviewView.webview.asWebviewUri(pathToCSS)));
-
 		const updateWebview = () => {
-			webviewView.webview.html = html;
+			webviewView.webview.html = viewGfxDocument();
 		};
 
 		setInterval(updateWebview, 1000);
