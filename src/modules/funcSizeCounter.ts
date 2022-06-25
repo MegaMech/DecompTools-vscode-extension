@@ -74,7 +74,7 @@ export class FunctionTreeProvider implements vscode.TreeDataProvider<TreeData> {
     async getChildren(element?: TreeData): Promise<TreeData[]> {
         // Build root elements
         if (!element) {
-            const projDir = this.config.reconfigurate("projectPath");
+            const projDir = this.config.getWorkingPath();
             const fullPath = path.normalize(projDir+"/"+this.config.config.asmDir+"/"+this.config.config.nonmatchingDir);
             const str = utils.getDirectoriesRecursive(fullPath);
             str.shift();str.shift();str.shift();
@@ -99,7 +99,6 @@ export class FunctionTreeProvider implements vscode.TreeDataProvider<TreeData> {
             return data;
         }
         // Use reference data to build tree items (children).
-        //console.log(element.path);
         await this.getTreeFiles(element.path, this.sizeRef.size);
         return this.funcs;
     }

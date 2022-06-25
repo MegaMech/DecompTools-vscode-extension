@@ -16,8 +16,7 @@ export function arraydsm(binFile: string, startOffset: number, symbol: string) {
     const config = new DecompToolsConfiguration();
     config.init();
 
-    const projFolder = config.reconfigurate("projectPath");
-    const projFolderWSL = config.reconfigurate("projectPathWSL");
+    const projFolder = config.getWorkingPath();
     const binFolder = config.config.binDir;
 
     if (!binFile || !startOffset || !symbol) { return; }

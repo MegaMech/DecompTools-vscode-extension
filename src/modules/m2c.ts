@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
 import { DecompToolsConfiguration } from "./configuration";
+import { OutgoingMessage } from 'http';
 
 export class m2c {
     private text?: vscode.TextEditor;
@@ -57,7 +59,6 @@ export class m2c {
                     let symbol = item.name.replace(/\(.*$/, "");
 
                     if (this.oldFunc == symbol) { return; };
-
                     await this.runm2c(symbol, activeEditor, this.textEventHandler, this.onDidChange, this.m2cDocument);
 
                     this.oldFunc = symbol;
@@ -70,30 +71,45 @@ export class m2c {
 
     private async runm2c(symbol: string, activeEditor: vscode.TextEditor, handler: m2cOutput, ondid: vscode.EventEmitter<vscode.Uri>, uri: vscode.Uri) {
         const fileName = activeEditor.document.fileName.match(/[ \w-]+?(?=\.)/);
-
         const config = new DecompToolsConfiguration();
         config.init();
         const m2cPath = config.reconfigurate("m2cDir");
         const nonMatchingPath = config.config.nonmatchingDir;
+        const asmPath = config.config.asmDir;
+        const projectPath = config.getWorkingPath();
         const cp = require('child_process')
 
-        const args = "py "+m2cPath+"\\m2c.py "+nonMatchingPath+"/"+fileName+"/"+symbol+".s"+" -f "+symbol;
+        const args = "py "+path.normalize(m2cPath+"/m2c.py")+" "+path.normalize(projectPath+"/"+asmPath+"/"+nonMatchingPath+"/"+fileName+"/"+symbol+".s")+" -f "+symbol;
 
-        cp.exec(args, (err:string, stdout:string, stderr:any) => {
-            if (this.view == undefined) {
-                // todo: Handle shutdown/recreating the text editor panel.
-                // This likely needs to go somehwere else.
-            }
-            if (err) {
-                handler.data = err;
-                ondid.fire(uri);
-
-                return;
-            }
-            handler.data = stdout;
+        if (projectPath == "ERROR") {
+            handler.data = "Error: You must be in a workspace or folder to use Decomp Tools.";
             ondid.fire(uri);
-        });
-
+            return;
+        }
+        
+        if (this.view == undefined) {
+            // todo: Handle shutdown/recreating the text editor panel.
+            // This likely needs to go somewhere else.
+            // Undefined doesn't work like this
+            //console.log(this.view)
+            //console.error("Cannot find view for M2C, did you close the texteditor window?");
+            
+        }
+        try {
+            const out = cp.execSync(args, {encoding: "utf-8"});
+            handler.data = String(out);
+            ondid.fire(uri);
+        }
+        catch (err) {
+            const msg = "Error or nothing to decomp.\nCan only run m2c on files that have assembly in\n"+asmPath+"/"+nonMatchingPath+" \
+            \nMake sure the code file name matches the code folder name:\n \
+            "+asmPath+"/"+nonMatchingPath+"/code_file_name/asm_func.s";
+            handler.data = msg+"\n\n"+String(err);
+            ondid.fire(uri);
+            //console.error(err);
+            //console.error("m2c terminal command failed!");
+            return;
+        }
     }
 
 }

@@ -3,17 +3,31 @@ import { DecompToolsConfiguration } from "./configuration";
 import * as fs from 'fs';
 import { Buffer } from 'node:buffer';
 import * as path from 'path';
+import { openStdin } from 'process';
+import { platform } from 'os';
 
 /**
  * gfxdismulti decomps static DLs to matching C code.
  */
 export async function gfxdismulti(binFile: string, startOffset: number, symbol: string) {
-    const { spawnSync } = require('child_process');
+    const { spawnSync, execSync } = require('child_process');
 
     const config = new DecompToolsConfiguration();
     config.init();
-    const projFolder = config.reconfigurate("projectPath");
-    const projFolderWSL = config.reconfigurate("projectPathWSL");
+    const projFolder = config.getWorkingPath();
+    
+    let projFolderEscaped = projFolder;
+    if (projFolder.search(/\\\\/) == -1 && platform() == "win32") {
+        projFolderEscaped = projFolder.replace(/(?<!\\)\\(?!\\)/g, "\\\\");
+    }
+    let projFolderWSL;
+    if (platform() == "win32") {
+        projFolderWSL = execSync("wsl wslpath "+projFolderEscaped, {encoding: "utf-8"});
+        projFolderWSL = projFolderWSL.replace(/[\n\r]/g, "");
+    } else {
+        projFolderWSL = projFolderEscaped;
+    }
+    
     const binFolder = config.config.binDir;
     const gfxdisPath = config.reconfigurate("gfxdisDir");
     const F3DType = config.config.f3d;
@@ -40,7 +54,6 @@ export async function gfxdismulti(binFile: string, startOffset: number, symbol: 
      * If gfxdis outputs a no op the func completes.
      **/
     for (let i = 0; i < iterations; i++) {
-
         const out = spawnSync("wsl", [arg1+" -f "+arg2WSL+" -a 0x"+(offset+startOffset).toString(16).toUpperCase()], {windowsVerbatimArguments: true, encoding: "utf-8"});
         if (out.stderr) {console.error(out.stderr); return;}
 

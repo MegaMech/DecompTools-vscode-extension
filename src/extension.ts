@@ -2,13 +2,10 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as fs from 'fs';
 import { funcSizeCounter } from './modules/funcSizeCounter';
 import { m2c } from './modules/m2c';
 import { gfxdismulti } from './modules/gfxdismulti';
 import { gfxdis } from './modules/gfxdis/gfxdis';
-import { DecompToolsConfiguration } from './modules/configuration';
-import { mk64 } from './decomp_config';
 import { arraydsm } from './modules/arraydsm';
 import { viewDocument } from './ui.html';
 

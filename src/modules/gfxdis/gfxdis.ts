@@ -24,7 +24,7 @@ export class gfxdis {
 
         let unk0 = highlight.match(/(?<=->unk0 = ).*/g);
         let unk4 = highlight.match(/(?<=->unk4 = ).*/g);
-        
+
         let str = "";
 
         if (unk0 && unk4) {
@@ -32,7 +32,7 @@ export class gfxdis {
             for (let i = 0; i < unk0.length; i++) {
                 unk0[i] = unk0[i].replace(/;/g, "");
             }
-            for (let i = 0; i < unk0.length; i++) {
+            for (let i = 0; i < unk4.length; i++) {
                 unk4[i] = unk4[i].replace(/;/g, "");
             }
 
@@ -79,7 +79,6 @@ export class gfxdis {
         machine_code = machine_code.replace(/(0x)|( )/g, "");
         machine_code = machine_code.replace(/\n/g, " ");
         
-        console.log(machine_code);
         const out = spawnSync("wsl", [arg1+" -g "+dl+" -d "+machine_code], {windowsVerbatimArguments: true, encoding: "utf-8"});
     
         const activeEditor = vscode.window.activeTextEditor;

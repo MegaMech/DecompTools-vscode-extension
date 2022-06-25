@@ -5,6 +5,8 @@ Allows everyone to access and improve upon useful tools that might not otherwise
 
 Specifically made for N64 decomp, but other platforms such as GC could be supported as well.
 
+Video: https://youtu.be/5J2ZWwe3IC4
+
 ## Features
 
 * Modular design in Typescript. Anyone can add a module contributing to an efficient decomp workflow.
@@ -17,14 +19,18 @@ Specifically made for N64 decomp, but other platforms such as GC could be suppor
 Compile gfxdis for wsl or linux.
 https://github.com/glankk/n64
 
-## Install
-Install the extension. (I haven't gotten that far yet)
-
 ## Compiling from source
 Open the project from VS Code and press F5 to compile and create a debugging session.
 
 ## Usage
-Open the Decomp Tools menu by navigate to the decomp icon on the activbity bar. Click the `Begin Decomp!` button to initialize modules.
+Open a workspace or folder. This is required.
+Then in Settings add in the paths to gfxdis and mips2C:
+`File->Preferences->Settings`
+Search `Decomp Tools`
+
+Open the Decomp Tools menu by navigating to the decomp icon on the activbity bar. Click the `Begin Decomp!` button to initialize modules.
+![image](https://user-images.githubusercontent.com/7255464/175793530-a63e3541-9f97-4cf2-9973-0fff20185e33.png)
+
 
 ### M2C
 You may need to click in and out of a function scope to get the M2C to appear. It only runs on functions that contain assembly in your decomps non_matching folder.
@@ -39,20 +45,15 @@ A static displaylist generator. Find a .data file with DLs in it. Provide an off
 Input a size in bytes to list any funcs that size or smaller. Only works for non_matching files.
 
 ## Configuration
-File->Preferences->Settings
-
-Search "Decomp Tools". Enter the project folder.
 The extension has a config file that auto recognizes decomps.
 The extension will need to be recompiled and updated to support more decomps.
 It currently has only been tested on mk64 but it has a definition for kirby.
-
-Todo: Use current workspace automatically.
 
 ## Future Desirable Features
 
 * Generate CTX on startup for the m2c module
 * Have a regenerate CTX button
-* Display decomp stats on the status bar.
+* Display decomp progress stats on the status bar.
 * Vtx dissassembly
 
 ## Todo
@@ -63,8 +64,7 @@ Todo: Use current workspace automatically.
 
 ## Known Issues
 
-* The M2C module doesn't start working immediately without prior input and some messing about.
-* The Func Size Counter doesn't open files on click and shows empty folders.
+* The Func Size Counter doesn't open files on click and shows empty folders. May even duplicate files.
 
 ## Contributing
 

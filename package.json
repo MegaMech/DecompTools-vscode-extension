@@ -2,7 +2,7 @@
   "name": "decomptools",
 	"displayName": "Decomp Tools",
 	"description": "In IDE tools for N64 decomp",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"publisher": "MegaMech",
 	"engines": {
 		"vscode": "^1.68.0"
@@ -66,16 +66,6 @@
 		"configuration": {
 			"title": "Decomp Tools",
 			"properties": {
-				"decompTools.projectPath": {
-					"type": "string",
-					"default": "C:\\Users\\MegaMech\\decomp\\mk64",
-					"description": "Project Folder, leave blank to use current workspace"
-				},
-				"decompTools.projectPathWSL": {
-					"type": "string",
-					"default": "/mnt/c/Users/MegaMech/decomp/mk64",
-					"description": "Project Folder in wsl/linux format"
-				},
 				"decompTools.m2cDir": {
 					"type": "string",
 					"default": "C:\\Users\\MegaMech\\decomp\\m2c",
