@@ -28,7 +28,8 @@ Then in Settings add in the paths to gfxdis and mips2C:
 `File->Preferences->Settings`
 Search `Decomp Tools`
 
-Open the Decomp Tools menu by navigating to the decomp icon on the activbity bar. Click the `Begin Decomp!` button to initialize modules.
+Open the Decomp Tools menu by navigating to the decomp icon on the activity bar. Click the `Begin Decomp!` button to initialize modules.  
+
 ![image](https://user-images.githubusercontent.com/7255464/175793530-a63e3541-9f97-4cf2-9973-0fff20185e33.png)
 
 
