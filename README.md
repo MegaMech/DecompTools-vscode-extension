@@ -5,8 +5,8 @@ Allows everyone to access and improve upon useful tools that might not otherwise
 
 Specifically made for N64 decomp, but other platforms such as GC could be supported as well.
 
-Video: https://youtu.be/5J2ZWwe3IC4
-marketplace: https://marketplace.visualstudio.com/items?itemName=MegaMech.decomptools
+Video: https://youtu.be/5J2ZWwe3IC4  
+marketplace: https://marketplace.visualstudio.com/items?itemName=MegaMech.decomptools  
 
 ## Features
 
