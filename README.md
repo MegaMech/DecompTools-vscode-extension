@@ -14,7 +14,7 @@ marketplace: https://marketplace.visualstudio.com/items?itemName=MegaMech.decomp
 * Generates M2C code in a nearby panel while you decomp. This way, you always have access to the original M2C! It tracks your scope, no need for any terminal commands.
 * Static DL generator
 * Dynamic DL realizer. Places matched machine-code into a text box for easy manipulation prior to sending to gfxdis.
-* Displays a filtered tree view of non-matching funcs of byte size. This helps devs decomp the small functions first. In the future, this could contain many filters.
+* Displays a list of funcs filtered by byte size. Only works for non-matching funcs. Ex. All funcs under 500 bytes. Helps to find all the small functions. In the future, this could contain different kinds of filters.
 
 ## Dependencies
 Compile gfxdis for wsl or linux.
@@ -44,7 +44,7 @@ Highlight some dynamic DLs then press `Realize Macros`. Modify the machine code 
 A static displaylist generator. Find a .data file with DLs in it. Provide an offset with valid DLs and Decomp Tools will get gfxdis to generate C code until it hits a no op. Also converts `0x` addresses to `D_` and adds includes. Its output will be pasted at your cursor position.
 
 ### Func Size Viewer
-Input a size in bytes to list any funcs that size or smaller. Only works for non_matching files.
+Input a size in bytes to list any funcs that size or smaller. Only works for non_matching files that are not in extra folders.
 
 ## Configuration
 The extension has a config file that auto recognizes decomps.
@@ -58,15 +58,13 @@ It currently has only been tested on mk64 but it has a definition for kirby.
 * Display decomp progress stats on the status bar.
 * Vtx dissassembly
 
-## Todo
-
-### Func Size Viewer
-* Display how many funcs were found.
-* Onclick open file.
-
 ## Known Issues
 
-* The Func Size Counter doesn't open files on click and shows empty folders. May even duplicate files.
+* Find small funcs does not support opening files in folders of folders:
+`ex. asm/non_matchings/audio/external/external.c.`
+It must be:
+`asm/non_matchings/external/external.c`
+
 
 ## Contributing
 

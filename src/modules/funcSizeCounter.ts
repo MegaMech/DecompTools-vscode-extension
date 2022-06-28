@@ -11,23 +11,96 @@ export class funcSizeCounter {
     
     readonly onDidChangeTreeData: vscode.EventEmitter<TreeData | undefined | null | void> = new vscode.EventEmitter<TreeData | undefined | null | void>();
     private sizeRef: sizeData;
+    private config = new DecompToolsConfiguration();
+    private counter: number;
+    private totalFuncsFound: number;
+    private childData: TreeData[];
+    private provider?: FunctionTreeProvider;
     constructor() {
         this.sizeRef = new sizeData();
+        this.config.init();
+        this.counter = 0;
+        this.totalFuncsFound = 0;
+        this.childData = [];
     }
     /**
      * size is bytes to check for
      * @param size kb
      **/
-    async init_count(size: number) {
-        this.sizeRef.size = size;
+    async init_count(context: vscode.ExtensionContext, size: number) {
+                
+        const commandHandler = async (doc: vscode.Uri, func: string) => {
+            vscode.window.showTextDocument(doc);
+            const activeEditor = vscode.window.activeTextEditor;
+            if (activeEditor) {
+                let document = activeEditor.document;
     
-        const provider = new FunctionTreeProvider(this.sizeRef, this.onDidChangeTreeData);
+                // Get the document text
+                const documentText = document.getText();
+                for (let i = 0; i < document.lineCount; i++) {
+                    const text = document.lineAt(i+1);
+                    if (text.text.search(String(func)) != -1) {
+                        if (text.text.search(";") != -1) { continue; }
+                        await vscode.commands.executeCommand("revealLine", {
+                            lineNumber: i+1,
+                            at: "top",
+                        });
+                        break;
+                    };
+                }
+            }
+        };
         
-        vscode.window.registerTreeDataProvider('funcs_view', provider);
-    }
-    public update(size: number) {
+        context.subscriptions.push(vscode.commands.registerCommand("decomp.openfunction", commandHandler));
+        
+        
         this.sizeRef.size = size;
+        const treeData = await this.searchFiles();
+
+        this.provider = new FunctionTreeProvider(treeData, this.onDidChangeTreeData);
+        
+        vscode.window.registerTreeDataProvider('funcs_view', this.provider);
+    }
+    public async update(size: number) {
+        this.sizeRef.size = size;
+        if (!this.provider) { return; }
+        this.provider.data = await this.searchFiles();
         this.onDidChangeTreeData.fire();
+    }
+    private async searchFiles(): Promise<TreeData[]> {
+        // Build root elements
+        const projDir = this.config.getWorkingPath();
+        const srcDir = this.config.config.srcDir;
+        const fullPath = path.normalize(projDir+"/"+this.config.config.asmDir+"/"+this.config.config.nonmatchingDir);
+        const extension = this.config.config.extension;
+        const str = utils.getDirectoriesRecursive(fullPath);
+        // Remove root directory from array.
+        str.shift();
+        let data:any = [];
+        this.totalFuncsFound = 0;
+        for (let el of str) {
+            let pathd = path.normalize(el);
+            this.childData = [];
+            this.counter = 0;
+
+            // Build children
+            for await (const f of utils.getFiles(pathd)) {
+                const stats = fs.statSync(f);
+ 
+                if (stats.size <= this.sizeRef.size) {
+                    this.counter++;
+                    this.totalFuncsFound++;
+                    const fileUri = vscode.Uri.file(path.normalize(projDir+"/"+srcDir+"/"+el.replace(/.*\\([^\\]+)\\/, "")+extension));
+                    this.childData.push(
+                        new TreeData(String(f.match(/[ \w-]+?(?=\.)/)),  fileUri, vscode.TreeItemCollapsibleState.None));
+                }
+            }
+            if (this.counter == 0) { continue; }
+            const a = new TreeData(String(el.match(/[ \w-]+?(?=$)/)), el, vscode.TreeItemCollapsibleState.Expanded, this.childData);
+            data.push(a);
+        }
+        vscode.window.showInformationMessage("Found "+this.totalFuncsFound+" funcs.");
+        return data;
     }
 }
 
@@ -39,28 +112,32 @@ export class sizeData {
 }
 
 export class TreeData extends vscode.TreeItem {
+    public command?: vscode.Command;
     constructor(
         public readonly label: string,
-        public readonly path: string,
+        public readonly path: vscode.Uri,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-    ) {
-        super(label, collapsibleState);
-    }
+        public children?: TreeData[] | undefined,
+        ) {
+            super(label, collapsibleState);
+            this.children = children;
+            if (!children) {
+                this.command = {title: this.label,command: "decomp.openfunction", arguments: [this.path, this.label]};
+            }
+        }
 }
 
 export class FunctionTreeProvider implements vscode.TreeDataProvider<TreeData> {
     private _onDidChangeTreeData: vscode.EventEmitter<TreeData | undefined | null | void>;
     
     
-    public funcs: TreeData[];
+    public data: TreeData[];
 
-    private config = new DecompToolsConfiguration();
-    constructor(private sizeRef: sizeData, 
+    constructor(private results: TreeData[], 
         ondid: vscode.EventEmitter<TreeData | undefined | null | void>
         ) {
-            this.funcs = [];
             this._onDidChangeTreeData = ondid;
-            this.config.init();
+            this.data = results;
         }
 
     refresh(): void {
@@ -71,52 +148,10 @@ export class FunctionTreeProvider implements vscode.TreeDataProvider<TreeData> {
         return element;
     }
     
-    async getChildren(element?: TreeData): Promise<TreeData[]> {
-        // Build root elements
-        if (!element) {
-            const projDir = this.config.getWorkingPath();
-            const fullPath = path.normalize(projDir+"/"+this.config.config.asmDir+"/"+this.config.config.nonmatchingDir);
-            const str = utils.getDirectoriesRecursive(fullPath);
-            str.shift();str.shift();str.shift();
-            let data:TreeData[] = [];
-            for (let el of str) {
-
-                let counter = 0;
-                for await (const f of utils.getFiles(el)) {
-                    fs.stat(f, (err, stats) => {
-                        if (err) console.error(err);
-    
-                        if (stats.size <= this.sizeRef.size) {
-                            counter++;
-                        }
-                    });
-                }
-                if (counter = 0) { continue; }
-
-                const a = new TreeData(String(el.match(/[ \w-]+?(?=$)/)), el, vscode.TreeItemCollapsibleState.Collapsed);
-                data.push(a);
-            }
-            return data;
+    getChildren(element?: TreeData | undefined): vscode.ProviderResult<TreeData[]> {
+        if (element === undefined) {
+            return this.data;
         }
-        // Use reference data to build tree items (children).
-        await this.getTreeFiles(element.path, this.sizeRef.size);
-        return this.funcs;
-    }
-
-    private getTreeFiles(patha: string, size: number) {
-        return (async () => {
-            for await (const f of utils.getFiles(patha)) {
-                fs.stat(f, (err, stats) => {
-                    if (err) console.error(err);
-
-                    if (stats.size <= size) {
-                        const fileName = f.match(/[ \w-]+?(?=\.)/);
-                        const a = new TreeData(fileName+".s",String(f), vscode.TreeItemCollapsibleState.None);
-                        this.funcs.push(a);
-                    }
-                });
-                
-            }
-        })()
+        return element.children;
     }
 }

@@ -15,7 +15,6 @@ import { viewDocument } from './ui.html';
 export function activate(context: vscode.ExtensionContext) {
 
 	const provider = new customViewProvider(context.extensionPath, context);
-	
     context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(customViewProvider.viewType, provider));
 
@@ -50,14 +49,16 @@ let init2 = false;
 export class init_modules2 {
 	private m:funcSizeCounter;
 	private didInit = false;
-	constructor() {
+	private context: vscode.ExtensionContext;
+	constructor(context: vscode.ExtensionContext) {
 		this.m = new funcSizeCounter();
+		this.context = context;
 	}
 	init(size: number) {
 		
 		if (!init2) {
 			init2 = true;
-			this.m.init_count(size);
+			this.m.init_count(this.context, size);
 		}
 		if (init2) {
 			this.m.update(size);
@@ -76,7 +77,7 @@ class customViewProvider implements vscode.WebviewViewProvider {
 		context: vscode.ExtensionContext,
 	) {
 		this.extensionUri = _extensionUri;
-		this.funcSizeCount = new init_modules2();
+		this.funcSizeCount = new init_modules2(context);
 		this.context = context;
 	 }
 
@@ -118,7 +119,7 @@ class customViewProvider implements vscode.WebviewViewProvider {
 					try {
 						a = Number(data.text);
 					} catch {
-						throw "Bad find funcs with length input"
+						throw "Bad user input for find funcs"
 					}
 					this.funcSizeCount.init(data.text);
 					break;

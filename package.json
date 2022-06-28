@@ -18,8 +18,8 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "decomp.unused",
-				"title": "Unused command"
+				"command": "decomp.openfunction",
+				"title": "Opens file at function scope"
 			}
 		],
 		"viewsContainers": {

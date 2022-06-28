@@ -8,6 +8,7 @@ export interface decomp_config {
     binDir: string;
     mapPath: string;
     displayListHead: string;
+    extension: string;
 }
 
 export class mk64 implements decomp_config {
@@ -20,6 +21,7 @@ export class mk64 implements decomp_config {
     binDir: string;
     mapPath: string;
     displayListHead: string;
+    extension: string;
     constructor() {
         this.ld = "mk64.ld";
         this.f3d = "f3dex";
@@ -30,6 +32,7 @@ export class mk64 implements decomp_config {
         this.binDir = "bin";
         this.mapPath = "build/us/mk64.us.map";
         this.displayListHead = "gDisplayListHead++";
+        this.extension = ".c";
     }
 }
 
@@ -43,6 +46,7 @@ export class kirby implements decomp_config {
     binDir: string;
     mapPath: string;
     displayListHead: string;
+    extension: string;
     constructor() {
         this.ld = "kirby.us.ld";
         this.f3d = "f3dex";
@@ -53,5 +57,6 @@ export class kirby implements decomp_config {
         this.binDir = "bin";
         this.mapPath = "build/us/kirby.us.map";
         this.displayListHead = "gDisplayListHead++";
+        this.extension = ".c";
     }
 }
