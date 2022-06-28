@@ -23,7 +23,8 @@ export class DecompToolsConfiguration {
             } else if (k.ld == file) {
                 this.config = k;
                 return;
-
+            } else {
+                this.config = mk;
             }
         });
         this.getWorkingPath
