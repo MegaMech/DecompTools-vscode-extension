@@ -21,6 +21,9 @@ Compile gfxdis for wsl or linux.
 https://github.com/glankk/n64
 
 ## Compiling from source
+```
+npm install -g yo generator-code
+```
 Open the project from VS Code and press F5 to compile and create a debugging session.
 
 ## Usage
