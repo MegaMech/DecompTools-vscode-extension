@@ -19,6 +19,7 @@ marketplace: https://marketplace.visualstudio.com/items?itemName=MegaMech.decomp
 ## Dependencies
 Compile gfxdis for wsl or linux.
 https://github.com/glankk/n64
+[Python](https://www.python.org/downloads/)
 
 ## Compiling from source
 ```
